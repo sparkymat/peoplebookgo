@@ -21,6 +21,43 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: people; Type: TABLE; Schema: public; Owner: ajith
+--
+
+CREATE TABLE public.people (
+    id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    user_id bigint,
+    name text NOT NULL,
+    other_names text[] DEFAULT ARRAY[]::text[] NOT NULL
+);
+
+
+ALTER TABLE public.people OWNER TO ajith;
+
+--
+-- Name: people_id_seq; Type: SEQUENCE; Schema: public; Owner: ajith
+--
+
+CREATE SEQUENCE public.people_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.people_id_seq OWNER TO ajith;
+
+--
+-- Name: people_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ajith
+--
+
+ALTER SEQUENCE public.people_id_seq OWNED BY public.people.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: ajith
 --
 
@@ -70,10 +107,25 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: people id; Type: DEFAULT; Schema: public; Owner: ajith
+--
+
+ALTER TABLE ONLY public.people ALTER COLUMN id SET DEFAULT nextval('public.people_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: ajith
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: people people_pkey; Type: CONSTRAINT; Schema: public; Owner: ajith
+--
+
+ALTER TABLE ONLY public.people
+    ADD CONSTRAINT people_pkey PRIMARY KEY (id);
 
 
 --
@@ -98,6 +150,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: people people_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ajith
+--
+
+ALTER TABLE ONLY public.people
+    ADD CONSTRAINT people_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --

@@ -8,3 +8,6 @@ schema:
 
 migrate:
 	migrate -source file://./db/migrations -database "postgres://127.0.0.1:5432/peoplebook?sslmode=disable" up
+
+newmigration:
+	migrate create -dir db/migrations -ext sql $(NAME)
