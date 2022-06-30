@@ -16,12 +16,59 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: date_resolution; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.date_resolution AS ENUM (
+    'year',
+    'month',
+    'day'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: people; Type: TABLE; Schema: public; Owner: ajith
+-- Name: partnerships; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.partnerships (
+    id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    person1_id bigint,
+    person2_id bigint,
+    started_at date,
+    ended_at date,
+    started_at_resolution public.date_resolution DEFAULT 'day'::public.date_resolution,
+    ended_at_resolution public.date_resolution DEFAULT 'day'::public.date_resolution
+);
+
+
+--
+-- Name: partnerships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.partnerships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: partnerships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.partnerships_id_seq OWNED BY public.partnerships.id;
+
+
+--
+-- Name: people; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.people (
@@ -34,10 +81,8 @@ CREATE TABLE public.people (
 );
 
 
-ALTER TABLE public.people OWNER TO ajith;
-
 --
--- Name: people_id_seq; Type: SEQUENCE; Schema: public; Owner: ajith
+-- Name: people_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.people_id_seq
@@ -48,17 +93,15 @@ CREATE SEQUENCE public.people_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.people_id_seq OWNER TO ajith;
-
 --
--- Name: people_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ajith
+-- Name: people_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.people_id_seq OWNED BY public.people.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: ajith
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.schema_migrations (
@@ -67,10 +110,8 @@ CREATE TABLE public.schema_migrations (
 );
 
 
-ALTER TABLE public.schema_migrations OWNER TO ajith;
-
 --
--- Name: users; Type: TABLE; Schema: public; Owner: ajith
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -82,10 +123,8 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO ajith;
-
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: ajith
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -96,31 +135,44 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO ajith;
-
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ajith
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: people id; Type: DEFAULT; Schema: public; Owner: ajith
+-- Name: partnerships id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.partnerships ALTER COLUMN id SET DEFAULT nextval('public.partnerships_id_seq'::regclass);
+
+
+--
+-- Name: people id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.people ALTER COLUMN id SET DEFAULT nextval('public.people_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: ajith
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: people people_pkey; Type: CONSTRAINT; Schema: public; Owner: ajith
+-- Name: partnerships partnerships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.partnerships
+    ADD CONSTRAINT partnerships_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: people people_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.people
@@ -128,7 +180,7 @@ ALTER TABLE ONLY public.people
 
 
 --
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: ajith
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
@@ -136,7 +188,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: ajith
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -144,7 +196,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: ajith
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -152,7 +204,23 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: people people_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ajith
+-- Name: partnerships partnerships_person1_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.partnerships
+    ADD CONSTRAINT partnerships_person1_id_fkey FOREIGN KEY (person1_id) REFERENCES public.users(id);
+
+
+--
+-- Name: partnerships partnerships_person2_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.partnerships
+    ADD CONSTRAINT partnerships_person2_id_fkey FOREIGN KEY (person2_id) REFERENCES public.users(id);
+
+
+--
+-- Name: people people_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.people
