@@ -11,3 +11,17 @@ migrate:
 
 newmigration:
 	migrate create -dir db/migrations -ext sql $(NAME)
+
+createdb:
+	psql -c 'CREATE DATABASE peoplebook;'
+
+dropdb-confirm:
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+
+dropdb: dropdb-confirm
+	psql -c 'DROP DATABASE peoplebook;'
+
+
+.SILENT: dropdb createdb
+
+.PHONY: dropdb-confirm dropdb

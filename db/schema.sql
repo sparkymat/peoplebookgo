@@ -77,7 +77,6 @@ CREATE TABLE public.users (
     id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    deleted_at timestamp with time zone,
     email text NOT NULL,
     encrypted_password text NOT NULL
 );
