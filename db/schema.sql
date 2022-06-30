@@ -27,9 +27,53 @@ CREATE TYPE public.date_resolution AS ENUM (
 );
 
 
+--
+-- Name: parent_relation_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.parent_relation_type AS ENUM (
+    'regular',
+    'biological',
+    'adopted'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: parent_relationships; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.parent_relationships (
+    id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    user_id bigint,
+    partnership_id bigint,
+    parent_relation_type public.parent_relation_type DEFAULT 'regular'::public.parent_relation_type
+);
+
+
+--
+-- Name: parent_relationships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.parent_relationships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: parent_relationships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.parent_relationships_id_seq OWNED BY public.parent_relationships.id;
+
 
 --
 -- Name: partnerships; Type: TABLE; Schema: public; Owner: -
@@ -143,6 +187,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: parent_relationships id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.parent_relationships ALTER COLUMN id SET DEFAULT nextval('public.parent_relationships_id_seq'::regclass);
+
+
+--
 -- Name: partnerships id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -161,6 +212,14 @@ ALTER TABLE ONLY public.people ALTER COLUMN id SET DEFAULT nextval('public.peopl
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: parent_relationships parent_relationships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.parent_relationships
+    ADD CONSTRAINT parent_relationships_pkey PRIMARY KEY (id);
 
 
 --
@@ -201,6 +260,22 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: parent_relationships parent_relationships_partnership_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.parent_relationships
+    ADD CONSTRAINT parent_relationships_partnership_id_fkey FOREIGN KEY (partnership_id) REFERENCES public.partnerships(id);
+
+
+--
+-- Name: parent_relationships parent_relationships_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.parent_relationships
+    ADD CONSTRAINT parent_relationships_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
