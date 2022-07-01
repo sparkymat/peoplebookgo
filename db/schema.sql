@@ -50,7 +50,7 @@ CREATE TABLE public.parent_relationships (
     id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    user_id bigint,
+    person_id bigint,
     partnership_id bigint,
     parent_relation_type public.parent_relation_type DEFAULT 'regular'::public.parent_relation_type
 );
@@ -271,11 +271,11 @@ ALTER TABLE ONLY public.parent_relationships
 
 
 --
--- Name: parent_relationships parent_relationships_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: parent_relationships parent_relationships_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.parent_relationships
-    ADD CONSTRAINT parent_relationships_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT parent_relationships_person_id_fkey FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -283,7 +283,7 @@ ALTER TABLE ONLY public.parent_relationships
 --
 
 ALTER TABLE ONLY public.partnerships
-    ADD CONSTRAINT partnerships_person1_id_fkey FOREIGN KEY (person1_id) REFERENCES public.users(id);
+    ADD CONSTRAINT partnerships_person1_id_fkey FOREIGN KEY (person1_id) REFERENCES public.people(id);
 
 
 --
@@ -291,7 +291,7 @@ ALTER TABLE ONLY public.partnerships
 --
 
 ALTER TABLE ONLY public.partnerships
-    ADD CONSTRAINT partnerships_person2_id_fkey FOREIGN KEY (person2_id) REFERENCES public.users(id);
+    ADD CONSTRAINT partnerships_person2_id_fkey FOREIGN KEY (person2_id) REFERENCES public.people(id);
 
 
 --
